@@ -1,5 +1,7 @@
 #include "Clique.h"
 #include "Menu.h"
+#include <chrono>
+using namespace std::chrono;
 
 int main()
 {
@@ -28,11 +30,18 @@ int main()
     {
         P->insert(i);
     }
+    auto start = high_resolution_clock::now();
     C = c.BK(R, P, X, C, maxClique);
+    // Calcular el tiempo transcurrido
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
     // SOlo el máximo clique
     for (auto it = maxClique->begin(); it != maxClique->end(); it++)
     {
         cout << *it << " ";
     }
+
+    cout << "Tiempo de ejecución: " << duration.count() << " milisegundos" << endl;
+
     return 0;
 }
