@@ -52,6 +52,11 @@ int main()
     {
         cout << *it << " ";
     }
+
+    // Se imprime el tamaño del máximo clique
+    cout << endl
+         << "Tamaño del máximo clique: " << maxClique->size() << endl;
+
     // Imprime el tamaño del máximo clique
     cout << "Tiempo de ejecución: " << duration.count() << " milisegundos" << endl;
 
