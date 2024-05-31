@@ -1,6 +1,8 @@
 #include "Clique.h"
 #include "Menu.h"
-#include <omp.h> // Para OpenMP
+#include <omp.h>  // Para OpenMP
+#include <chrono> // Para medir el tiempo de ejecución
+using namespace std::chrono;
 
 int main()
 {
@@ -30,6 +32,9 @@ int main()
         P->insert(i);
     }
 
+    // Mide el tiempo
+    auto start = high_resolution_clock::now();
+
 // Llamar a la función paralelizada BK
 #pragma omp parallel shared(R, P, X, C, maxClique)
     {
@@ -39,11 +44,16 @@ int main()
             C = c.BK(R, P, X, C, maxClique);
         }
     }
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<milliseconds>(stop - start);
 
     // SOlo el máximo clique
     for (auto it = maxClique->begin(); it != maxClique->end(); it++)
     {
         cout << *it << " ";
     }
+    // Imprime el tamaño del máximo clique
+    cout << "Tiempo de ejecución: " << duration.count() << " milisegundos" << endl;
+
     return 0;
 }

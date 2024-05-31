@@ -1,19 +1,19 @@
 all: testClique testMenu main
 
 Clique.o: Clique.cpp Clique.h
-	g++ -c Clique.cpp
+	g++ -c -O2 Clique.cpp
 
 testClique: testClique.cpp Clique.o
-	g++ testClique.cpp Clique.o -o testClique
+	g++ -O2 testClique.cpp Clique.o -o testClique
 
 Menu.o: Menu.cpp Menu.h
-	g++ -c Menu.cpp
+	g++ -c -O2 Menu.cpp
 
 testMenu: testMenu.cpp Menu.o
-	g++ testMenu.cpp Menu.o -o testMenu
+	g++ -O2 testMenu.cpp Menu.o -o testMenu
 
 main: main.cpp Clique.o Menu.o
-	g++ main.cpp Clique.o Menu.o -o main
+	g++ -O2 main.cpp Clique.o Menu.o -o main
 
 clean:
-	rm -f *.o testClique
+	rm -f *.o testClique testMenu main
