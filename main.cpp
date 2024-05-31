@@ -7,11 +7,11 @@ int main()
 {
     // Crear un objeto de la clase Menu
     Menu menu;
-    set<int> *R = new set<int>;
-    set<int> *P = new set<int>;
-    set<int> *X = new set<int>;
-    set<int> *maxClique = new set<int>;
-    set<set<int> *> *C = new set<set<int> *>;
+    vector<int> *R = new vector<int>;
+    vector<int> *P = new vector<int>;
+    vector<int> *X = new vector<int>;
+    vector<int> *maxClique = new vector<int>;
+    vector<vector<int> *> *C = new vector<vector<int> *>;
     string nombreArchivo;
     vector<vector<int>> matriz;
     auto start = high_resolution_clock::now();
@@ -54,7 +54,7 @@ int main()
             // Inicializar conjunto P con todos los vértices
             for (int i = 0; i < matriz.size(); i++)
             {
-                P->insert(i);
+                P->push_back(i);
             }
 
             // Mide el tiempo
@@ -64,7 +64,7 @@ int main()
 #pragma omp parallel shared(R, P, X, C, maxClique)
             {
 // Iniciar el algoritmo desde el primer vértice
-#pragma omp single nowait
+#pragma omp parallel
                 {
                     C = c.BK(R, P, X, C, maxClique);
                 }
@@ -75,6 +75,9 @@ int main()
                 cout << "No se encontró un máximo clique" << endl;
                 break;
             }
+
+            // Se ordena el máximo clique
+            sort(maxClique->begin(), maxClique->end());
 
             stop = high_resolution_clock::now();
             duration = duration_cast<milliseconds>(stop - start);

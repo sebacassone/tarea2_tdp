@@ -22,11 +22,9 @@ public:
     // Constructor
     Clique(vector<vector<int>> a, int size);
     // Algoritmo de Bron-Kerbosch
-    set<set<int> *> *BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> *> *C, set<int> *maxClique);
-    // Obtiene los vecinos de un vértice
-    set<int> *neighbours(int v);
-    // Escoge un pivote
-    int choosePivot(set<int> *P, set<int> *X);
+    vector<vector<int> *> *BK(vector<int> *R, vector<int> *P, vector<int> *X, vector<vector<int> *> *C, vector<int> *maxClique);
+    vector<int> *neighbours(int v);
+    int choosePivot(vector<int> *P, vector<int> *X);
 
 private:
     // Atributos
