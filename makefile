@@ -6,5 +6,11 @@ Clique.o: Clique.cpp Clique.h
 testClique: testClique.cpp Clique.o
 	g++ testClique.cpp Clique.o -o testClique
 
+Graph.o: Graph.cpp Graph.h
+	g++ -c Graph.cpp
+
+testGraph: testGraph.cpp Graph.o
+	g++ testGraph.cpp Graph.o -o testGraph
+
 clean:
-	rm -f *.o testClique
+	rm -f *.o testClique testGraph
