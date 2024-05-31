@@ -1,19 +1,16 @@
 #include "Graph.h"
 
-// Add edge to the graph
 void Graph::addEdge(int u, int v)
 {
     adjList[u].insert(v);
     adjList[v].insert(u);
 }
 
-// Function to get the neighbors of a vertex
 std::unordered_set<int> Graph::neighbours(int v)
 {
     return adjList[v];
 }
 
-// Function to find the vertex with the maximum number of connections in P ∩ Neighbors(u)
 int Graph::selectPivot(const std::set<int> &P, const std::set<int> &X)
 {
     std::set<int> unionPX;
@@ -40,13 +37,12 @@ int Graph::selectPivot(const std::set<int> &P, const std::set<int> &X)
     return pivot;
 }
 
-// Function to perform Bron-Kerbosch with pivoting, heuristic selection, and pruning
 void Graph::BK(std::set<int> &R, std::set<int> &P, std::set<int> &X, std::set<std::set<int>> &C, int &maxCliqueSize)
 {
     if (P.empty() && X.empty())
     {
         C.insert(R);
-        maxCliqueSize = std::max(maxCliqueSize, (int)R.size());
+        maxCliqueSize = std::max(maxCliqueSize, static_cast<int>(R.size()));
         return;
     }
 
@@ -61,7 +57,6 @@ void Graph::BK(std::set<int> &R, std::set<int> &P, std::set<int> &X, std::set<st
     for (int v : P_vec)
     {
         R.insert(v);
-
         std::unordered_set<int> vecinos = neighbours(v);
         std::set<int> P1, X1;
         std::set_intersection(P.begin(), P.end(), vecinos.begin(), vecinos.end(), std::inserter(P1, P1.begin()));
