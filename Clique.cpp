@@ -2,7 +2,7 @@
 
 /*
  * Constructor
- * Inicializa la matriz de adyacencia y el tamaño del grafo
+ * Inicializa la matriz de adyacencia, el tamaño del grafo y precalcula los vecinos
  * params:
  * - a: Matriz de adyacencia
  * - size: Tamaño del grafo
@@ -13,40 +13,52 @@ Clique::Clique(vector<vector<int>> a, int size)
 {
     adyacency = a;
     this->size = size;
+    precalculateNeighbors();
 }
 
 /*
-    * Método neighbours
-    * Obtiene los vecinos de un vértice
-    * params:
-    * - v: Vértice
-    * return:
-    *  - Set con los vecinos del vértice
-
-*/
-vector<int> *Clique::neighbours(int v)
+ * Método precalculateNeighbors
+ * Precalcula los vecinos de cada vértice y los almacena en una estructura de datos
+ * return:
+ *  - void
+ */
+void Clique::precalculateNeighbors()
 {
-    auto neighbors = new vector<int>();
+    neighbors.resize(size);
     for (int i = 0; i < size; ++i)
     {
-        if (adyacency[v][i] == 1)
+        for (int j = 0; j < size; ++j)
         {
-            neighbors->push_back(i);
+            if (adyacency[i][j] == 1)
+            {
+                neighbors[i].push_back(j);
+            }
         }
     }
-    return neighbors;
 }
 
 /*
-    * Método choosePivot
-    * Escoge un pivote para el algoritmo de Bron-Kerbosch
-    * params:
-    * - P: Conjunto de vértices
-    * - X: Conjunto de vértices
-    * return:
-    *  - Pivote
+ * Método neighbours
+ * Obtiene los vecinos precalculados de un vértice
+ * params:
+ * - v: Vértice
+ * return:
+ *  - Vector con los vecinos del vértice
+ */
+vector<int> *Clique::neighbours(int v)
+{
+    return &neighbors[v];
+}
 
-*/
+/*
+ * Método choosePivot
+ * Escoge un pivote para el algoritmo de Bron-Kerbosch
+ * params:
+ * - P: Conjunto de vértices
+ * - X: Conjunto de vértices
+ * return:
+ *  - Pivote
+ */
 int Clique::choosePivot(vector<int> *P, vector<int> *X)
 {
     // Unión de P y X
@@ -79,8 +91,6 @@ int Clique::choosePivot(vector<int> *P, vector<int> *X)
             max_intersection_size = intersection_size;
             pivot = u;
         }
-
-        delete neigh_u;
     }
 
     return pivot;
@@ -106,7 +116,7 @@ vector<vector<int> *> *Clique::BK(vector<int> *R, vector<int> *P, vector<int> *X
 #pragma omp critical
         {
             // Mover los elementos de R a un nuevo vector y agregarlo a C
-            C->push_back(R);
+            C->push_back(new vector<int>(*R));
             // Se guarda el máximo clique
             if (R->size() > maxClique->size())
             {
@@ -150,14 +160,11 @@ vector<vector<int> *> *Clique::BK(vector<int> *R, vector<int> *P, vector<int> *X
             vector<int> X1;
             set_intersection(X->begin(), X->end(), vecinos->begin(), vecinos->end(), back_inserter(X1));
 
-            delete vecinos;
-
             C = BK(R1, &P1, &X1, C, maxClique);
 
             delete R1;
         }
     }
 
-    delete neigh_u;
     return C;
 }

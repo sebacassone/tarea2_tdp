@@ -27,10 +27,14 @@ public:
     vector<int> *neighbours(int v);
     // Elegir pivote
     int choosePivot(vector<int> *P, vector<int> *X);
+    // Precalcular vecinos
+    void precalculateNeighbors();
 
 private:
     // Atributos
     vector<vector<int>> adyacency;
     int size;
+    // Declaración de la estructura para almacenar los vecinos
+    vector<vector<int>> neighbors;
 };
 #endif /* Clique_h */
