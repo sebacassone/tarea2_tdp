@@ -12,15 +12,15 @@ int main()
     Clique c(adyacency, 4); // Crear un objeto de la clase Clique
 
     // Conjuntos
-    set<int> *R = new set<int>;
-    set<int> *P = new set<int>;
-    set<int> *X = new set<int>;
-    set<int> *maxClique = new set<int>;
-    set<set<int> *> *C = new set<set<int> *>;
+    vector<int> *R = new vector<int>;
+    vector<int> *P = new vector<int>;
+    vector<int> *X = new vector<int>;
+    vector<int> *maxClique = new vector<int>;
+    vector<vector<int> *> *C = new vector<vector<int> *>;
     // Inicializar P
     for (int i = 0; i < 4; i++)
     {
-        P->insert(i);
+        P->push_back(i);
     }
     // Llamar a la función paralelizada BK
 #pragma omp parallel shared(R, P, X, C, maxClique)
@@ -31,6 +31,7 @@ int main()
             C = c.BK(R, P, X, C, maxClique);
         }
     }
+    sort(maxClique->begin(), maxClique->end());
     for (auto it = maxClique->begin(); it != maxClique->end(); it++)
     {
         cout << *it << " ";
