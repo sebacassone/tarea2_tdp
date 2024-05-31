@@ -37,6 +37,16 @@ vector<int> *Clique::neighbours(int v)
     return neighbors;
 }
 
+/*
+    * Método choosePivot
+    * Escoge un pivote para el algoritmo de Bron-Kerbosch
+    * params:
+    * - P: Conjunto de vértices
+    * - X: Conjunto de vértices
+    * return:
+    *  - Pivote
+
+*/
 int Clique::choosePivot(vector<int> *P, vector<int> *X)
 {
     // Unión de P y X
@@ -76,6 +86,18 @@ int Clique::choosePivot(vector<int> *P, vector<int> *X)
     return pivot;
 }
 
+/*
+ * Método BK
+ * Implementa el algoritmo de Bron-Kerbosch para encontrar cliques en un grafo
+ * params:
+ * - R: Conjunto de vértices
+ * - P: Conjunto de vértices
+ * - X: Conjunto de vértices
+ * - C: Conjunto de cliques
+ * - maxClique: Máximo clique
+ * return:
+ *  - Conjunto de cliques
+ */
 vector<vector<int> *> *Clique::BK(vector<int> *R, vector<int> *P, vector<int> *X, vector<vector<int> *> *C, vector<int> *maxClique)
 {
     // Si P y X están vacíos
@@ -83,15 +105,12 @@ vector<vector<int> *> *Clique::BK(vector<int> *R, vector<int> *P, vector<int> *X
     {
 #pragma omp critical
         {
-            C->push_back(new vector<int>(*R));
+            // Mover los elementos de R a un nuevo vector y agregarlo a C
+            C->push_back(R);
             // Se guarda el máximo clique
             if (R->size() > maxClique->size())
             {
-                maxClique->clear();
-                for (int it : *R)
-                {
-                    maxClique->push_back(it);
-                }
+                *maxClique = *R; // Copiar elementos de R a maxClique
             }
         }
         return C;
@@ -118,30 +137,24 @@ vector<vector<int> *> *Clique::BK(vector<int> *R, vector<int> *P, vector<int> *X
         // Se añade v a R
         if (find(neigh_u->begin(), neigh_u->end(), v) == neigh_u->end())
         {
-            // Se crea un nuevo conjunto con R y v
+            // Mover los elementos de R a un nuevo vector y agregar v
             auto R1 = new vector<int>(*R);
             R1->push_back(v);
 
             // Se obtienen los vecinos de v y se calcula la intersección con P
             auto vecinos = neighbours(v);
-            auto P1 = new vector<int>();
-            set_intersection(P->begin(), P->end(), vecinos->begin(), vecinos->end(), back_inserter(*P1));
+            vector<int> P1;
+            set_intersection(P->begin(), P->end(), vecinos->begin(), vecinos->end(), back_inserter(P1));
 
             // Se calcula la intersección de X y vecinos de v
-            auto X1 = new vector<int>();
-            set_intersection(X->begin(), X->end(), vecinos->begin(), vecinos->end(), back_inserter(*X1));
+            vector<int> X1;
+            set_intersection(X->begin(), X->end(), vecinos->begin(), vecinos->end(), back_inserter(X1));
 
             delete vecinos;
 
-            C = BK(R1, P1, X1, C, maxClique);
+            C = BK(R1, &P1, &X1, C, maxClique);
 
             delete R1;
-            delete P1;
-            delete X1;
-
-            // Se elimina v de P y se añade a X
-            P->erase(remove(P->begin(), P->end(), v), P->end());
-            X->push_back(v);
         }
     }
 

@@ -70,6 +70,9 @@ int main()
                 }
             }
 
+            stop = high_resolution_clock::now();
+            duration = duration_cast<milliseconds>(stop - start);
+
             if (maxClique->size() == 0)
             {
                 cout << "No se encontró un máximo clique" << endl;
@@ -78,9 +81,6 @@ int main()
 
             // Se ordena el máximo clique
             sort(maxClique->begin(), maxClique->end());
-
-            stop = high_resolution_clock::now();
-            duration = duration_cast<milliseconds>(stop - start);
 
             // Solo el máximo clique
             for (auto it = maxClique->begin(); it != maxClique->end(); it++)

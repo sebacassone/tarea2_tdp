@@ -23,7 +23,9 @@ public:
     Clique(vector<vector<int>> a, int size);
     // Algoritmo de Bron-Kerbosch
     vector<vector<int> *> *BK(vector<int> *R, vector<int> *P, vector<int> *X, vector<vector<int> *> *C, vector<int> *maxClique);
+    // Encontrar vecinos de un vértice
     vector<int> *neighbours(int v);
+    // Elegir pivote
     int choosePivot(vector<int> *P, vector<int> *X);
 
 private:
