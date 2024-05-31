@@ -52,11 +52,20 @@ int Clique::choosePivot(set<int> *P, set<int> *X)
     return pivot;
 }
 
-set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> *> *C)
+set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> *> *C, set<int> *maxClique)
 {
     if (P->empty() && X->empty())
     {
         C->insert(new set<int>(*R));
+        // Se guarda el máximo clique
+        if (R->size() > maxClique->size())
+        {
+            maxClique->clear();
+            for (auto it = R->begin(); it != R->end(); it++)
+            {
+                maxClique->insert(*it);
+            }
+        }
         return C;
     }
 
@@ -80,7 +89,7 @@ set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> 
 
         delete vecinos;
 
-        C = BK(R1, P1, X1, C);
+        C = BK(R1, P1, X1, C, maxClique);
 
         delete R1;
         delete P1;
@@ -91,6 +100,5 @@ set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> 
     }
 
     delete neigh_u;
-
     return C;
 }

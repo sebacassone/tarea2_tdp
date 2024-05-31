@@ -19,7 +19,7 @@ int main()
     {
         P->insert(i);
     }
-    C = c.BK(R, P, X, C);
+    C = c.BK(R, P, X, C, new set<int>);
     for (auto it = C->begin(); it != C->end(); it++)
     {
         for (auto it2 = (*it)->begin(); it2 != (*it)->end(); it2++)
