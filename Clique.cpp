@@ -42,33 +42,42 @@ int Clique::getOptimalPivot(set<int> *P, set<int> *X)
     return pivot;
 }
 
-int Clique::getRandomPivot(set<int> *P)
+int Clique::getRandomPivot(set<int> *P, set<int> *X)
 {
-    int pivot = -1;
-    int randomIndex = rand() % P->size();
-    set<int>::iterator it = P->begin();
-    advance(it, randomIndex);
-    pivot = *it;
-    return pivot;
+    if (P->empty() && X->empty())
+    {
+        return -1; // No hay pivote válido si ambos conjuntos están vacíos
+    }
+
+    set<int> P_union_X = *P;
+    P_union_X.insert(X->begin(), X->end());
+    int index = rand() % P_union_X.size();
+    auto it = P_union_X.begin();
+    advance(it, index);
+    return *it;
 }
 
 set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> *> *C)
 {
     if (P->empty() && X->empty())
     {
-        C->insert(R);
+        C->insert(new set<int>(*R));
         return (C);
     }
 
-    int u = getRandomPivot(P); // Selecciona el pivote óptimo u
+    int u = getOptimalPivot(P, X); // Selecciona el pivote óptimo u
+    if (u == -1)
+    {
+        return C; // Si no hay pivote válido, retorna el conjunto de cliques encontrado
+    }
 
     set<int> *neighbors_u = neighbours(u); // vecinos de u
 
-    set<int> *P_minus_neighbors_u; // P - neighbors(u)
+    set<int> *P_minus_neighbors_u = new set<int>; // P - neighbors(u)
     for (auto x : *P)
     {
-        if (neighbors_u->find(x) == neighbors_u->end()) // si x no está en neighbors(u)
-        {
+        if (neighbors_u->find(x) == neighbors_u->end())
+        { // si x no está en neighbors(u)
             P_minus_neighbors_u->insert(x);
         }
     }
@@ -92,10 +101,19 @@ set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> 
 
         set<int> *X1 = new set<int>;
         set_intersection(X_new->begin(), X_new->end(), vecinos->begin(), vecinos->end(), inserter(*X1, X1->begin()));
+
+        delete vecinos;
+
         C = this->BK(R1, P1, X1, C);
+
+        delete R1;
+        delete P1;
+        delete X1;
 
         P_new->erase(v);
         X_new->insert(v);
     }
+    delete P_minus_neighbors_u;
+
     return C;
 }
