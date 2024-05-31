@@ -70,6 +70,13 @@ set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> 
     }
 
     int u = choosePivot(P, X);
+
+    // Podar ramificaciones si R + P no es un clique máximo
+    if (R->size() + P->size() <= maxClique->size())
+    {
+        return C;
+    }
+
     set<int> *neigh_u = neighbours(u);
 
     set<int> P_excl_neigh_u;
@@ -77,26 +84,29 @@ set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> 
 
     for (auto v : P_excl_neigh_u)
     {
-        set<int> *R1 = new set<int>(*R);
-        R1->insert(v);
+        if (!neighbours(u)->count(v))
+        {
+            set<int> *R1 = new set<int>(*R);
+            R1->insert(v);
 
-        set<int> *vecinos = neighbours(v);
-        set<int> *P1 = new set<int>;
-        set_intersection(P->begin(), P->end(), vecinos->begin(), vecinos->end(), inserter(*P1, P1->begin()));
+            set<int> *vecinos = neighbours(v);
+            set<int> *P1 = new set<int>;
+            set_intersection(P->begin(), P->end(), vecinos->begin(), vecinos->end(), inserter(*P1, P1->begin()));
 
-        set<int> *X1 = new set<int>;
-        set_intersection(X->begin(), X->end(), vecinos->begin(), vecinos->end(), inserter(*X1, X1->begin()));
+            set<int> *X1 = new set<int>;
+            set_intersection(X->begin(), X->end(), vecinos->begin(), vecinos->end(), inserter(*X1, X1->begin()));
 
-        delete vecinos;
+            delete vecinos;
 
-        C = BK(R1, P1, X1, C, maxClique);
+            C = BK(R1, P1, X1, C, maxClique);
 
-        delete R1;
-        delete P1;
-        delete X1;
+            delete R1;
+            delete P1;
+            delete X1;
 
-        P->erase(v);
-        X->insert(v);
+            P->erase(v);
+            X->insert(v);
+        }
     }
 
     delete neigh_u;
