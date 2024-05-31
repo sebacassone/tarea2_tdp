@@ -2,31 +2,38 @@
 
 int main()
 {
-
+    // Matriz de adyacencia
     vector<vector<int>> adyacency = {
         {0, 1, 1, 0},
         {1, 0, 1, 0},
         {1, 1, 0, 1},
         {0, 0, 1, 0}};
 
-    Clique c(adyacency, 4);
+    Clique c(adyacency, 4); // Crear un objeto de la clase Clique
 
+    // Conjuntos
     set<int> *R = new set<int>;
     set<int> *P = new set<int>;
     set<int> *X = new set<int>;
+    set<int> *maxClique = new set<int>;
     set<set<int> *> *C = new set<set<int> *>;
+    // Inicializar P
     for (int i = 0; i < 4; i++)
     {
         P->insert(i);
     }
-    C = c.BK(R, P, X, C, new set<int>);
-    for (auto it = C->begin(); it != C->end(); it++)
+    // Llamar a la función paralelizada BK
+#pragma omp parallel shared(R, P, X, C, maxClique)
     {
-        for (auto it2 = (*it)->begin(); it2 != (*it)->end(); it2++)
+// Iniciar el algoritmo desde el primer vértice
+#pragma omp single nowait
         {
-            cout << *it2 << " ";
+            C = c.BK(R, P, X, C, maxClique);
         }
-        cout << endl;
+    }
+    for (auto it = maxClique->begin(); it != maxClique->end(); it++)
+    {
+        cout << *it << " ";
     }
     return 0;
 }

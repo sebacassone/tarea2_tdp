@@ -6,6 +6,7 @@
 #include <vector>
 #include <set>
 #include <limits>
+#include <omp.h> // Para OpenMP
 
 using namespace std;
 
