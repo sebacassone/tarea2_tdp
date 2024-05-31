@@ -21,53 +21,25 @@ set<int> *Clique::neighbours(int v)
 
 int Clique::getOptimalPivot(set<int> *P, set<int> *X)
 {
-    // Selecciona el pivote óptimo u
-    int u = -1;
-    int max = -1;
-    // max = max(|P intersec N(v)|) para v en P U X
+    int pivot = -1;
+    int minCommonNeighbors = numeric_limits<int>::max(); // Inicializamos con un valor grande
     for (auto v : *P)
     {
-        // P intersec N(v)
-        set<int> *neighbours_v = neighbours(v);
-        int count = 0;
-        // |P intersec N(v)|
-        for (auto x : *P)
+        int commonNeighbors = 0;
+        for (auto x : *X)
         {
-            // x in P intersec N(v)
-            if (neighbours_v->find(x) != neighbours_v->end())
+            if (neighbours(v)->count(x))
             {
-                count++;
+                commonNeighbors++;
             }
         }
-        // max(|P intersec N(v)|)
-        if (count > max)
+        if (commonNeighbors < minCommonNeighbors)
         {
-            max = count;
-            u = v;
+            minCommonNeighbors = commonNeighbors;
+            pivot = v;
         }
-        delete neighbours_v;
     }
-    // max = max(|P intersec N(v)|) para v en P U X
-    for (auto v : *X)
-    {
-        set<int> *neighbours_v = neighbours(v);
-        int count = 0;
-        for (auto x : *P)
-        {
-            if (neighbours_v->find(x) != neighbours_v->end())
-            {
-                count++;
-            }
-        }
-        if (count > max)
-        {
-            max = count;
-            u = v;
-        }
-        delete neighbours_v;
-    }
-    // retorna el pivote óptimo u
-    return u;
+    return pivot;
 }
 
 set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> *> *C)
