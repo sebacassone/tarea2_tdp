@@ -56,6 +56,7 @@ set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> 
 {
     if (P->empty() && X->empty())
     {
+#pragma omp critical
         C->insert(new set<int>(*R));
         // Se guarda el máximo clique
         if (R->size() > maxClique->size())
@@ -82,6 +83,7 @@ set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> 
     set<int> P_excl_neigh_u;
     set_difference(P->begin(), P->end(), neigh_u->begin(), neigh_u->end(), inserter(P_excl_neigh_u, P_excl_neigh_u.begin()));
 
+#pragma omp parallel for shared(R, P, X, C, maxClique)
     for (auto v : P_excl_neigh_u)
     {
         if (!neighbours(u)->count(v))

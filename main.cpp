@@ -1,5 +1,6 @@
 #include "Clique.h"
 #include "Menu.h"
+#include <omp.h> // Para OpenMP
 
 int main()
 {
@@ -28,7 +29,17 @@ int main()
     {
         P->insert(i);
     }
-    C = c.BK(R, P, X, C, maxClique);
+
+// Llamar a la función paralelizada BK
+#pragma omp parallel shared(R, P, X, C, maxClique)
+    {
+// Iniciar el algoritmo desde el primer vértice
+#pragma omp single nowait
+        {
+            C = c.BK(R, P, X, C, maxClique);
+        }
+    }
+
     // SOlo el máximo clique
     for (auto it = maxClique->begin(); it != maxClique->end(); it++)
     {
