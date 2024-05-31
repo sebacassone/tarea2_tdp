@@ -16,4 +16,5 @@ public:
     set<set<int> *> *BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> *> *C);
     set<int> *neighbours(int v);
     int getOptimalPivot(set<int> *P, set<int> *X);
+    int getRandomPivot(set<int> *P);
 };

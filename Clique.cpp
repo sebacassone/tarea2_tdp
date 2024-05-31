@@ -42,6 +42,16 @@ int Clique::getOptimalPivot(set<int> *P, set<int> *X)
     return pivot;
 }
 
+int Clique::getRandomPivot(set<int> *P)
+{
+    int pivot = -1;
+    int randomIndex = rand() % P->size();
+    set<int>::iterator it = P->begin();
+    advance(it, randomIndex);
+    pivot = *it;
+    return pivot;
+}
+
 set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> *> *C)
 {
     if (P->empty() && X->empty())
@@ -50,7 +60,7 @@ set<set<int> *> *Clique::BK(set<int> *R, set<int> *P, set<int> *X, set<set<int> 
         return (C);
     }
 
-    int u = getOptimalPivot(P, X); // Selecciona el pivote óptimo u
+    int u = getRandomPivot(P); // Selecciona el pivote óptimo u
 
     set<int> *neighbors_u = neighbours(u); // vecinos de u
 
