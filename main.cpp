@@ -66,7 +66,7 @@ int main()
 // Iniciar el algoritmo desde el primer vértice
 #pragma omp parallel
                 {
-                    C = c.BK(R, P, X, C, maxClique);
+                    c.BK(R, P, X, C, maxClique);
                 }
             }
 

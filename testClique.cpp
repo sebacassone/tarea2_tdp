@@ -28,7 +28,7 @@ int main()
 // Iniciar el algoritmo desde el primer vértice
 #pragma omp single nowait
         {
-            C = c.BK(R, P, X, C, maxClique);
+            c.BK(R, P, X, C, maxClique);
         }
     }
     sort(maxClique->begin(), maxClique->end());
