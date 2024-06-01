@@ -47,11 +47,11 @@ print(prueba)
 
 Con el p-value = 6.144e-06 es muchísimo menor a 0.05 por lo que se falla al rechazar la hipótesis nula y se acepta la hipótesis alternativa de que hay diferencias significativas por lo menos entre dos de los algoritmos.
 
-Luego, se hace un análisis post-hoc.
+Luego, se hace un análisis post-hoc para determinar que grupos poseen diferencias significativas.
 
 ```{r}
 post_hoc <- pairwise.wilcox.test(datos$Tiempo, datos$Algoritmo, p.adjust.method = "bonferroni", paired = TRUE)
 print(post_hoc)
 ```
 
-Con los p-value obtenidos entre todos los grupos, podemos concluir que existen diferencias significativas entre todos los tiempos.
+Con los p-value obtenidos entre todos los grupos, podemos concluir con un 95% de confianza que existen diferencias significativas entre todos los tiempos.
