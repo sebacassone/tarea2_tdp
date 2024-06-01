@@ -61,6 +61,7 @@ vector<int> *Clique::neighbours(int v)
  */
 int Clique::choosePivot(vector<int> *P, vector<int> *X)
 {
+    // Encuentra el vertice que maximiza la intersección con P, osea el que tiene más vecinos en P
     // Unión de P y X
     vector<int> union_PX;
     set_union(P->begin(), P->end(), X->begin(), X->end(), back_inserter(union_PX));
