@@ -10,11 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 Se hará un estudio comparativo entre los tiempos antes de cambiar los STL de Set a Vector y después de cambiarlos. También antes y después de precalcular los vecinos durante la construcción del Clique.
-Para esto se utiliza la prueba de Q de Cochran debido a que se tienen más de dos muestras.
+Para esto se utiliza la Friedman para muestras correlacionadas.
 ```{r}
-library(tidyverse)
-library(RVAideMemoire)
-library(rcompanion)
 # Datos
 instancia <- 1:12
 datos_antes <- c(5285, 5269, 5273, 5284, 5297, 5280, 5526, 5829, 5574, 5909, 5570, 5706)
@@ -27,10 +24,9 @@ datos
 ```
 
 Se verifican las condiciones:
-1. Variable dicotómica: Si, ya que se comparan tres algoritmos, presencia o ausencia de un criterio específico de eficiencia en cada ejecución del algoritmo.
-2. Mas de dos muestras: Si, ya que se comparan tres algoritmos.
-3. Tamaño de la muestra suficientemente grande n * k >= 24: Si, ya que n = 12 y k = 3.
-4. Obs independientes: Si, ya que se comparan tres algoritmos diferentes.
+1. La variable independiente debe ser categórica y tener dos o más niveles. En este caso, la variable independiente es categórica y tiene tres niveles: antes, vector y precalculo.
+2. La variable de la variable independiente debe ser ordinal. En este caso, la variable independiente que es el tiempo de ejecución de los algoritmos es una variable continua.
+3. Las observaciones son una muestra aleatoria de la población. En este caso, se asume que los datos son una muestra aleatoria de la población.
 
 Se plantean las hipótesis:
 - H0: No hay diferencias significativas entre los tiempos de ejecución de los algoritmos.
@@ -45,5 +41,17 @@ datos[["instancia"]] <- factor(datos[["instancia"]])
 datos[["Algoritmo"]] <- factor(datos[["Algoritmo"]])
 
 # Se aplica la prueba
-prueba <- cochran.test(Tiempo ~ Algoritmo | instancia, data = datos, alpha = 0.05)
+prueba <- friedman.test(Tiempo ~ Algoritmo | instancia, data = datos)
+print(prueba)
 ```
+
+Con el p-value = 6.144e-06 es muchísimo menor a 0.05 por lo que se falla al rechazar la hipótesis nula y se acepta la hipótesis alternativa de que hay diferencias significativas por lo menos entre dos de los algoritmos.
+
+Luego, se hace un análisis post-hoc.
+
+```{r}
+post_hoc <- pairwise.wilcox.test(datos$Tiempo, datos$Algoritmo, p.adjust.method = "bonferroni", paired = TRUE)
+print(post_hoc)
+```
+
+Con los p-value obtenidos entre todos los grupos, podemos concluir que existen diferencias significativas entre todos los tiempos.
