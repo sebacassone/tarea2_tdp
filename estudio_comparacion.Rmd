@@ -1,0 +1,49 @@
+---
+title: "Tarea2 - Comparación"
+output: html_document
+date: "2024-05-29"
+autor: "Sebastián Cassone"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+Se hará un estudio comparativo entre los tiempos antes de cambiar los STL de Set a Vector y después de cambiarlos. También antes y después de precalcular los vecinos durante la construcción del Clique.
+Para esto se utiliza la prueba de Q de Cochran debido a que se tienen más de dos muestras.
+```{r}
+library(tidyverse)
+library(RVAideMemoire)
+library(rcompanion)
+# Datos
+instancia <- 1:12
+datos_antes <- c(5285, 5269, 5273, 5284, 5297, 5280, 5526, 5829, 5574, 5909, 5570, 5706)
+datos_vector <- c(894, 849, 836, 823, 826, 827, 806, 819, 801, 802, 836, 822)
+datos_precalculo <- c(387, 360, 344, 339, 332, 324, 329, 342, 343, 337, 346, 338)
+
+# Se dejan en un data.frame
+datos <- data.frame(instancia = instancia, antes = datos_antes, vector = datos_vector, precalculo = datos_precalculo)
+datos
+```
+
+Se verifican las condiciones:
+1. Variable dicotómica: Si, ya que se comparan tres algoritmos, presencia o ausencia de un criterio específico de eficiencia en cada ejecución del algoritmo.
+2. Mas de dos muestras: Si, ya que se comparan tres algoritmos.
+3. Tamaño de la muestra suficientemente grande n * k >= 24: Si, ya que n = 12 y k = 3.
+4. Obs independientes: Si, ya que se comparan tres algoritmos diferentes.
+
+Se plantean las hipótesis:
+- H0: No hay diferencias significativas entre los tiempos de ejecución de los algoritmos.
+- Ha: Hay diferencias significativas por lo menos entre dos de los algoritmos.
+
+Se calcula la Q de Cochran:
+```{r}
+# Se calcula la media de cada algoritmo
+datos <- datos %>% pivot_longer(c(antes, vector, precalculo), names_to = "Algoritmo", values_to = "Tiempo")
+# Se transforma a Factor instancia y Algoritmo
+datos[["instancia"]] <- factor(datos[["instancia"]])
+datos[["Algoritmo"]] <- factor(datos[["Algoritmo"]])
+
+# Se aplica la prueba
+prueba <- cochran.test(Tiempo ~ Algoritmo | instancia, data = datos, alpha = 0.05)
+```

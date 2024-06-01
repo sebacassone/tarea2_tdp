@@ -126,7 +126,6 @@ void Clique::BK(vector<int> *R, vector<int> *P, vector<int> *X, vector<vector<in
         }
         return;
     }
-
     // Se escoge un pivote
     int u = choosePivot(P, X);
 
@@ -143,54 +142,29 @@ void Clique::BK(vector<int> *R, vector<int> *P, vector<int> *X, vector<vector<in
     vector<int> P_excl_neigh_u;
     set_difference(P->begin(), P->end(), neigh_u->begin(), neigh_u->end(), back_inserter(P_excl_neigh_u));
 
-    // Crear una lista de resultados parciales para evitar la sección crítica
-    vector<vector<int> *> local_cliques;
-
-#pragma omp parallel
+#pragma omp parallel for shared(R, P, X, C, maxClique)
+    for (int v : P_excl_neigh_u)
     {
-        vector<int> *local_maxClique = new vector<int>(*maxClique);
-        vector<vector<int> *> local_C;
-
-#pragma omp for nowait schedule(dynamic)
-        for (int i = 0; i < P_excl_neigh_u.size(); ++i)
+        // Se añade v a R
+        if (find(neigh_u->begin(), neigh_u->end(), v) == neigh_u->end())
         {
-            int v = P_excl_neigh_u[i];
+            // Mover los elementos de R a un nuevo vector y agregar v
+            auto R1 = new vector<int>(*R);
+            R1->push_back(v);
 
-            // Se añade v a R
-            if (find(neigh_u->begin(), neigh_u->end(), v) == neigh_u->end())
-            {
-                // Mover los elementos de R a un nuevo vector y agregar v
-                auto R1 = new vector<int>(*R);
-                R1->push_back(v);
+            // Se obtienen los vecinos de v y se calcula la intersección con P
+            auto vecinos = neighbours(v);
+            vector<int> P1;
+            set_intersection(P->begin(), P->end(), vecinos->begin(), vecinos->end(), back_inserter(P1));
 
-                // Se obtienen los vecinos de v y se calcula la intersección con P
-                auto vecinos = neighbours(v);
-                vector<int> P1;
-                set_intersection(P->begin(), P->end(), vecinos->begin(), vecinos->end(), back_inserter(P1));
+            // Se calcula la intersección de X y vecinos de v
+            vector<int> X1;
+            set_intersection(X->begin(), X->end(), vecinos->begin(), vecinos->end(), back_inserter(X1));
 
-                // Se calcula la intersección de X y vecinos de v
-                vector<int> X1;
-                set_intersection(X->begin(), X->end(), vecinos->begin(), vecinos->end(), back_inserter(X1));
+            BK(R1, &P1, &X1, C, maxClique);
 
-                BK(R1, &P1, &X1, &local_C, local_maxClique);
-
-                delete R1;
-            }
+            delete R1;
         }
-
-#pragma omp critical
-        {
-            if (local_maxClique->size() > maxClique->size())
-            {
-                *maxClique = *local_maxClique;
-            }
-            for (auto clique : local_C)
-            {
-                C->push_back(clique);
-            }
-        }
-
-        delete local_maxClique;
     }
 
     return;
