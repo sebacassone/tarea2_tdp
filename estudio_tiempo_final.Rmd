@@ -1,7 +1,8 @@
 ---
-title: "Tarea2"
+title: "Tarea2 - Tiempos"
 output: html_document
 date: "2024-05-29"
+autor: "Sebastián Cassone"
 ---
 
 ```{r setup, include=FALSE}
