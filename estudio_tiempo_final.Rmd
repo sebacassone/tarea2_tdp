@@ -15,7 +15,7 @@ Se hace un estudio de los tiempos de la ejecución del algoritmo con Heuristicas
 Se obtienen los siguientes tiempos de ejecución en milisegundos, se realizará un estudio de normalidad de los datos. Para posteriormente
 hacer una prueba de hipótesis para determinar si el tiempo de ejecución es menor a 380 ms.
 ```{r}
-datos <- c(370, 362, 363, 378, 358, 434, 377, 393, 371, 400, 362, 361, 361, 378, 348, 370, 366, 359, 371, 390, 360, 372, 363, 365, 383, 358, 365, 405, 362, 359, 369, 354)
+datos <- c(351, 328, 331, 462, 348, 383, 357, 369, 363, 350, 361, 348, 339, 341, 325, 341, 343, 348, 331, 336, 353, 415, 343, 411, 344, 340, 342, 361, 370, 346, 343, 345)
 shapiro <- shapiro.test(datos)
 print(shapiro)
 ```
@@ -23,15 +23,15 @@ print(shapiro)
 El p-value es muchisimo menor a 0.05, por lo que se rechaza la hipótesis nula de que los datos siguen una distribución normal. Por lo que se procede a realizar una prueba de hipótesis no paramétrica.
 
 Para esto se ocupará la prueba no paramétrica de Wilcoxon, con las siguientes hipótesis.
-H0: La mediana en el tiempo de ejecución es igual a 380.
-Ha: La mediana en el tiempo de ejecución es menor a 380.
+H0: La mediana en el tiempo de ejecución es igual a 360.
+Ha: La mediana en el tiempo de ejecución es menor a 360.
 
 Se verifican las condiciones de la prueba:
 1. Los datos son independientes, ya que se tomaron en diferentes ejecuciones del algoritmo.
 2. La escala de medición es ordinal, ya que se mide en milisegundos.
 
 ```{r}
-wilcox.test(datos, mu=380, alternative="less")
+wilcox.test(datos, mu=360, alternative="less")
 ```
 
-Con el p-value = 0.001926 se falla al rechazar la hipótesis nula y se concluye con un 95% de confianza que la mediana en el tiempo de ejecución es menor a 380.
+Con el p-value = 0.009691 se falla al rechazar la hipótesis nula y se concluye con un 95% de confianza que la mediana en el tiempo de ejecución es menor a 360.
